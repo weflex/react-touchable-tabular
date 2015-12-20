@@ -16,7 +16,7 @@ $ npm install react-touchable-tabular --save
 
 ## Usage
 
-```js
+```jsx
 const React = require('react');
 const Tabular = require('react-touchable-tabular');
 
