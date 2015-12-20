@@ -26,7 +26,7 @@ class ExampleApp extends React.Component {
   }
   render() {
     return (
-      <SortedTable getDataSource={this.getDataSource}
+      <Tabular getDataSource={this.getDataSource}
         tableHeight={1000}
         tableWidth={800}
         columns={[
