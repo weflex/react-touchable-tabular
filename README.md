@@ -1,6 +1,11 @@
 
 # React Touchable Tabular
 
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Dependency Status][david-image]][david-url]
+[![Downloads][downloads-image]][downloads-url]
+
 A React Component to used to view tabular data based on [facebook/fixed-data-table](https://github.com/facebook/fixed-data-table).
 
 ## Installation
@@ -60,3 +65,12 @@ We build the following features based on `fixed-data-table`:
 ## License
 
 MIT
+
+[npm-image]: https://img.shields.io/npm/v/react-touchable-tabular.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/react-touchable-tabular
+[travis-image]: https://img.shields.io/travis/weflex/react-touchable-tabular.svg?style=flat-square
+[travis-url]: https://travis-ci.org/weflex/react-touchable-tabular
+[david-image]: http://img.shields.io/david/weflex/react-touchable-tabular.svg?style=flat-square
+[david-url]: https://david-dm.org/weflex/react-touchable-tabular
+[downloads-image]: http://img.shields.io/npm/dm/react-touchable-tabular.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/react-touchable-tabular
