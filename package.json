@@ -1,0 +1,33 @@
+{
+  "name": "react-touchable-tabular",
+  "version": "1.0.0",
+  "description": "touchable table view component for React",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/weflex/react-touchable-tabular.git"
+  },
+  "keywords": [
+    "tabular",
+    "react",
+    "component",
+    "react-component"
+  ],
+  "author": "Yorkie Liu <yorkiefixer@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/weflex/react-touchable-tabular/issues"
+  },
+  "homepage": "https://github.com/weflex/react-touchable-tabular#readme",
+  "dependencies": {
+    "fixed-data-table": "0.6.0",
+    "moment": "2.10.6",
+    "scroller": "0.0.3"
+  },
+  "peerDependencies": {
+    "react": "0.14.3"
+  }
+}
