@@ -31,5 +31,10 @@ module.exports = {
         loader: 'style-loader!css-loader'
       }
     ]
+  },
+  externals: {
+    'react': 'react',
+    'react-dom': 'react-dom',
+    'moment': 'moment'
   }
 };

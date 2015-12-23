@@ -14,6 +14,17 @@ A React Component to used to view tabular data based on [facebook/fixed-data-tab
 $ npm install react-touchable-tabular --save
 ```
 
+## Requirement
+
+Before using this module, please make sure you have installed manually the following modules:
+
+- react
+- react-dom
+- momentjs namely moment from NPM
+
+> Note: The above 3 modules is peer dependencies, as well as the webpack externals to reduce 
+> the generated bundle size.
+
 ## Usage
 
 ```jsx

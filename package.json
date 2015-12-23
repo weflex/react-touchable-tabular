@@ -1,6 +1,6 @@
 {
   "name": "react-touchable-tabular",
-  "version": "1.2.9",
+  "version": "1.3.9",
   "description": "touchable table view component for React",
   "main": "dist/react-touchable-tabular.js",
   "scripts": {
@@ -25,11 +25,11 @@
   "homepage": "https://github.com/weflex/react-touchable-tabular#readme",
   "dependencies": {
     "fixed-data-table": "0.6.0",
-    "react-dom": "0.14.3",
     "scroller": "0.0.3"
   },
   "peerDependencies": {
     "react": "0.14.3",
+    "react-dom": "0.14.3",
     "moment": "2.10.6"
   },
   "devDependencies": {
