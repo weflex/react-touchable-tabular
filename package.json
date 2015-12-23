@@ -2,7 +2,7 @@
   "name": "react-touchable-tabular",
   "version": "1.2.3",
   "description": "touchable table view component for React",
-  "main": "src/index.js",
+  "main": "src/index.jsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
