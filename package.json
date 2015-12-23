@@ -1,10 +1,10 @@
 {
   "name": "react-touchable-tabular",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "touchable table view component for React",
-  "main": "src/index.js",
+  "main": "dist/react-touchable-tabular.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "./node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",
