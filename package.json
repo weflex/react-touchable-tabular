@@ -1,6 +1,6 @@
 {
   "name": "react-touchable-tabular",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "touchable table view component for React",
   "main": "src/index.js",
   "scripts": {
