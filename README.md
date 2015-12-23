@@ -17,8 +17,8 @@ $ npm install react-touchable-tabular --save
 ## Usage
 
 ```jsx
-const React = require('react');
-const Tabular = require('react-touchable-tabular');
+import React from 'react';
+import Tabular from 'react-touchable-tabular';
 
 class ExampleApp extends React.Component {
   async getDataSource() {

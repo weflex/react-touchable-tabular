@@ -1,14 +1,14 @@
-'use strict';
-const React = require('react');
-const Moment = require('moment');
-const {
+"use strict";
+import React from 'react';
+import Moment from 'moment';
+import {
   Scroller
-} = require('scroller');
-const { 
-  Table, 
-  Column, 
+} from 'scroller';
+import {
+  Table,
+  Column,
   Cell
-} = require('fixed-data-table');
+} from 'fixed-data-table';
 
 var SortTypes = {
   ASC: 'ASC',
@@ -203,14 +203,18 @@ class DataListWrapper {
   }
 }
 
-class SortedTable extends React.Component {
+class Tabular extends React.Component {
   constructor(props) {
     super(props);
+    this._mainKey = null;
     this._dataList = [];
     this._defaultSortIndexes = [];
     this._onSortChange = this._onSortChange.bind(this);
     this.state = {
-      sortedDataList: new DataListWrapper([], []),
+      sortedDataList: new DataListWrapper(
+        this._defaultSortIndexes,
+        this._dataList
+      ),
       colSortDirs: {},
     };
   }
@@ -223,6 +227,20 @@ class SortedTable extends React.Component {
       });
     }
   }
+  filter(input) {
+    const list = this._dataList;
+    const filteredIndexes = [];
+    const filterProperty = this._mainKey || this.props.columns[0].key;
+    for (let index = 0; index < list.length; index++) {
+      let key = getValueByNamespace(this._dataList[index], filterProperty);
+      if (key.toLowerCase().indexOf(input) !== -1) {
+        filteredIndexes.push(index);
+      }
+    }
+    this.setState({
+      sortedDataList: new DataListWrapper(filteredIndexes, this._dataList),
+    });
+  }
   _index() {
     var size = this._dataList.length;
     for (let index = 0; index < size; index++) {
@@ -230,6 +248,9 @@ class SortedTable extends React.Component {
     }
   }
   _onSortChange(columnKey, sortDir) {
+    // set mainKey firstly
+    this._mainKey = columnKey;
+    // start sorting
     var sortIndexes = this._defaultSortIndexes.slice();
     sortIndexes.sort((indexA, indexB) => {
       var valueA = getValueByNamespace(this._dataList[indexA], columnKey);
@@ -296,4 +317,4 @@ class SortedTable extends React.Component {
   }
 }
 
-module.exports = SortedTable;
+export default Tabular;
