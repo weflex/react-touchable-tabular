@@ -1,4 +1,6 @@
 "use strict";
+require('fixed-data-table/dist/fixed-data-table.min.css');
+require('./index.css');
 
 const React = require('react');
 const Moment = require('moment');
@@ -10,6 +12,7 @@ const {
   Column,
   Cell
 } = require('fixed-data-table');
+
 
 var SortTypes = {
   ASC: 'ASC',
