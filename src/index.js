@@ -1,14 +1,15 @@
 "use strict";
-import React from 'react';
-import Moment from 'moment';
-import {
+
+const React = require('react');
+const Moment = require('moment');
+const {
   Scroller
-} from 'scroller';
-import {
+} = require('scroller');
+const {
   Table,
   Column,
   Cell
-} from 'fixed-data-table';
+} = require('fixed-data-table');
 
 var SortTypes = {
   ASC: 'ASC',
@@ -317,4 +318,4 @@ class Tabular extends React.Component {
   }
 }
 
-export default Tabular;
+module.exports = Tabular;
