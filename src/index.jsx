@@ -1,18 +1,12 @@
 "use strict";
-require('fixed-data-table/dist/fixed-data-table.min.css');
-require('./index.css');
+import 'fixed-data-table/dist/fixed-data-table.min.css'
+import './index.css'
 
-const React = require('react');
-const Moment = require('moment');
-const {
-  Scroller
-} = require('scroller');
-const {
-  Table,
-  Column,
-  Cell
-} = require('fixed-data-table');
-
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Moment from 'moment';
+import Hammer from 'hammerjs';
+import {Table, Column, Cell} from 'fixed-data-table';
 
 var SortTypes = {
   ASC: 'ASC',
@@ -20,115 +14,11 @@ var SortTypes = {
 };
 
 function isTouchDevice() {
-  return 'ontouchstart' in document.documentElement // works on most browsers
+  return 'ontouchstart' in document// works on most browsers
+      || 'ontouchstart' in document.documentElement
       || 'onmsgesturechange' in window; // works on ie10
 }
 
-class TouchableArea extends React.Component {
-  static propTypes = { 
-    touchable: React.PropTypes.bool,
-  };
-  static defaultProps = {
-    touchable: true,
-  };
-  handleTouchStart(e) {
-    if (!this.props.scroller || !this.props.touchable) {
-      return;
-    }
-    this.props.scroller.doTouchStart(e.touches, e.timeStamp);
-    e.preventDefault();
-  }
-  handleTouchMove(e) {
-    if (!this.props.scroller || !this.props.touchable) {
-      return;
-    }
-    this.props.scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-    e.preventDefault();
-  }
-  handleTouchEnd(e) {
-    if (!this.props.scroller || !this.props.touchable) {
-      return;
-    }
-    this.props.scroller.doTouchEnd(e.timeStamp);
-    e.preventDefault();
-  }
-  render() {
-    var styles = {
-      touchable: {
-        position: 'absolute',
-        top: 50,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1,
-      }
-    };
-    return (
-      <div>
-        <div style={styles.touchable}
-          onTouchStart={this.handleTouchStart.bind(this)}
-          onTouchMove={this.handleTouchMove.bind(this)}
-          onTouchEnd={this.handleTouchEnd.bind(this)}
-          onTouchCancel={this.handleTouchEnd.bind(this)}
-        ></div>
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
-class TouchableWrapper extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      left: 0,
-      top: 100,
-      contentHeight: 0,
-      contentWidth: 0,
-    };
-  }
-  componentWillMount() {
-    this.scroller = new Scroller(this._handleScroll.bind(this));
-  }
-  render() {
-    if (!isTouchDevice()) {
-      return React.cloneElement(this.props.children, {
-        tableHeight: this.props.tableHeight,
-        tableWidth: this.props.tableWidth
-      });
-    }
-    var controlledScrolling = this.state.left !== undefined || 
-      this.state.top !== undefined;
-    var children = React.cloneElement(this.props.children, {
-      onContentDimensionsChange: this._onContentDimensionsChange.bind(this),
-      scrollTop: this.state.top,
-      scrollLeft: this.state.left,
-      tableHeight: this.props.tableHeight,
-      tableWidth: this.props.tableWidth,
-      overflowX: controlledScrolling ? 'hidden' : 'auto',
-      overflowY: controlledScrolling ? 'hidden' : 'auto',
-    });
-    return (
-      <TouchableArea scroller={this.scroller}>
-        {children}
-      </TouchableArea>
-    );
-  }
-  _onContentDimensionsChange(contentHeight, contentWidth) {
-    this.scroller.setDimensions(
-      this.props.tableWidth,
-      this.props.tableHeight,
-      contentWidth,
-      contentHeight
-    );
-  }
-  _handleScroll(left, top) {
-    this.setState({
-      left: left,
-      top: top
-    });
-  }
-}
 
 function reverseSortDirection (sortDir) {
   return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
@@ -146,7 +36,7 @@ function getValueByNamespace (obj, namespace, type) {
   } 
   while (key && curr);
   if (type === 'date') {
-    return Moment(curr).fromNow();
+    return Moment(curr).format('lll');
   } else if (type === 'bool') {
     return curr ? 'Yes' : 'No';
   } else {
@@ -182,15 +72,14 @@ class SortHeaderCell extends React.Component {
   }
 }
 
-const TextCell = ({rowIndex, data, columnKey, type, ...props}) => (
-  <Cell {...props}>
-    {getValueByNamespace(
-      data.getObjectAt(rowIndex),
-      columnKey,
-      type
-    )}
-  </Cell>
-);
+const TextCell = ({rowIndex, data, columnKey, type, onClick, ...props}) => {
+  const title = getValueByNamespace(data.getObjectAt(rowIndex), columnKey, type);
+  if (typeof onClick === 'function') {
+    return <Cell onClick={(e) => onClick(e, data.getObjectAt(rowIndex))} {...props}>{title}</Cell>;
+  } else {
+    return <Cell {...props}>{title}</Cell>;
+  }
+};
 
 class DataListWrapper {
   constructor(indexMap, data) {
@@ -220,8 +109,28 @@ class Tabular extends React.Component {
         this._dataList
       ),
       colSortDirs: {},
+      top: 0,
+      left: 0,
+      scrollTop: 0,
+      scrollLeft: 0,
+      maxScrollY: this.props.tableHeight,
+      maxScrollX: this.props.tableWidth,
     };
   }
+
+  _getScrollHanle(topProps, leftProps) {
+    return function(ev) {
+      var scrollTop = this.state.top - ev.deltaY;
+      if (scrollTop <= 0) {
+        this.setState({[topProps]: 0});
+      } else if (scrollTop >= this.state.maxScrollY) {
+        this.setState({[topProps]: this.state.maxScrollY});
+      } else {
+        this.setState({[topProps]: scrollTop});
+      }
+    }
+  }
+
   async componentDidMount() {
     if (typeof this.props.getDataSource === 'function') {
       this._dataList = await this.props.getDataSource();
@@ -230,7 +139,18 @@ class Tabular extends React.Component {
         sortedDataList: new DataListWrapper(this._defaultSortIndexes, this._dataList),
       });
     }
+
+    var table = ReactDOM.findDOMNode(this.refs.table);
+    var hammer = new Hammer.Manager(table, {
+      recognizers: [
+        [Hammer.Pan, {threshold: 0}],
+        [Hammer.Swipe, ['pan']]
+      ]
+    });
+    hammer.on('swipe pan', this._getScrollHanle('scrollTop', 'scrollLeft').bind(this));
+    hammer.on('panend', this._getScrollHanle('top', 'left').bind(this));
   }
+
   filter(input) {
     const list = this._dataList;
     const filteredIndexes = [];
@@ -251,6 +171,7 @@ class Tabular extends React.Component {
       this._defaultSortIndexes.push(index);
     }
   }
+
   _onSortChange(columnKey, sortDir) {
     // set mainKey firstly
     this._mainKey = columnKey;
@@ -278,13 +199,11 @@ class Tabular extends React.Component {
       }
     });
   }
+
   _onContentHeightChange(contentHeight) {
-    this.onContentDimensionsChange &&
-      this.onContentDimensionsChange(
-        contentHeight,
-        Math.max(600, this.tableWidth)
-      );
+    this.setState({maxScrollY: contentHeight - this.props.tableHeight});
   }
+
   renderColumn(data) {
     const width = this.props.tableWidth;
     const columnsCount = this.props.columns.length;
@@ -299,25 +218,43 @@ class Tabular extends React.Component {
             {data.title}
           </SortHeaderCell>
         }
-        cell={<TextCell data={this.state.sortedDataList} type={data.type} />}
+        cell={(
+          <TextCell data={this.state.sortedDataList}
+            type={data.type}
+            onClick={data.onClick} />
+        )}
         width={1.0/columnsCount*width}
       />
     );
   }
+
   render() {
-    return (
-      <TouchableWrapper {...this.props}>
-        <Table
-          rowHeight={50}
-          rowsCount={this.state.sortedDataList.getSize()}
-          headerHeight={50}
-          height={this.props.tableHeight}
-          width={this.props.tableWidth}
-          onContentHeightChange={this._onContentHeightChange}>
-          {this.props.columns.map(this.renderColumn.bind(this))}
-        </Table>
-      </TouchableWrapper>
-    );
+    var table = (
+      <Table
+        ref='table'
+        rowHeight={50}
+        rowsCount={this.state.sortedDataList.getSize()}
+        headerHeight={50}
+        height={this.props.tableHeight}
+        width={this.props.tableWidth}>
+        {this.props.columns.map(this.renderColumn.bind(this))}
+      </Table>);
+
+
+    if (!isTouchDevice()) {
+      return React.cloneElement(table, {
+        overflowY: 'auto',
+        overflowX: 'auto',
+      });
+    } else {
+      return React.cloneElement(table, {
+        onContentHeightChange: this._onContentHeightChange.bind(this),
+        overflowY: 'hidden',
+        overflowX: 'hidden',
+        scrollTop: this.state.scrollTop,
+        scrollLeft: this.state.scrollLeft,
+      });
+    }
   }
 }
 
